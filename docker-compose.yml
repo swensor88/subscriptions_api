@@ -1,0 +1,42 @@
+version: '3.8'
+services:
+  db:
+    build: 
+      dockerfile: Dockerfile
+      context: docker/db
+    ports:
+      - 5432:5432
+    expose:
+      - 5432
+    environment:
+      # These variables are special to the official PG image, see: https://hub.docker.com/_/postgres/
+      POSTGRES_DB: subscriptions_api # match DB_NAME from below
+      POSTGRES_USER: subscriptions_user # match DB_USERNAME from below
+      POSTGRES_PASSWORD: S3cret # match DB_PASSWORD from below
+      PGDATA: /var/lib/postgresql/data      
+    volumes:
+      - ~/apps/postgres2:/var/lib/postgresql/data
+    networks:
+      subscriptions_api_network:
+        ipv4_address: 175.40.128.2
+  api:
+    build: 
+      dockerfile: docker/api/Dockerfile
+      context: .
+    command: >
+      sh -c "uvicorn app.main:app --reload --host 0.0.0.0"
+    environment:
+      MYAPI_DATABASE__DSN: postgresql://subscription_user:S3cret@175.40.128.2:5432/subscription_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    networks:
+      subscriptions_api_network:
+        ipv4_address: 175.40.128.1
+networks:
+  subscriptions_api_network:
+    ipam:
+      driver: default
+      config:
+        - subnet: 175.40.0.0/16
