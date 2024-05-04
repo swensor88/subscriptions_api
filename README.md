@@ -1,10 +1,10 @@
 # NWO Subscriptions
 
-##Overview
+## Overview
 
 This is my submission for the inteview screening process for NWO.ai. It is a simple REST API built with Fast API. It is fully containerized and should be easy to install.
 
-##Installation
+## Installation
 
 ### Pre-Requisites
 
@@ -12,7 +12,7 @@ This is my submission for the inteview screening process for NWO.ai. It is a sim
 - python3
 - Git
 - Optional: GitHub Account
-- Please have Network subnet 175.40.0.0/16 available on your local Docker environment. Alternatively, you can change these values in docker-compose.yml
+- If you've been using Docker, you will need to free up network subnet 175.40.0.0/16. Deleting the stack using this subnet will work. Alternatively, you can change these values in docker-compose.yml. Learn more: [Networking in Docker Compose](https://docs.docker.com/compose/networking/)
 
 ### Step 1: Clone repository
 
