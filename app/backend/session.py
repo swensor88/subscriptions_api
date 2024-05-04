@@ -12,7 +12,7 @@ from app.backend.config import config
 
 # create session factory to generate new database sessions
 SessionFactory = sessionmaker(
-    bind=create_engine(config.database.dsn, pool_size=10, pool_timeout=5, pool_pre_ping=True, connect_args={'options': '-c lock_timeout=5 -c statement_timeout=5'}),
+    bind=create_engine(config.database.dsn, pool_size=10, pool_timeout=5, pool_pre_ping=True, connect_args={'options': '-c lock_timeout=1s -c statement_timeout=1s'}),
     autocommit=False,
     autoflush=False,
     expire_on_commit=False,

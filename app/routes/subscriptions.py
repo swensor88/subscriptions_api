@@ -19,7 +19,10 @@ from app.services.base import (
 )
 
 from app.backend.session import create_session
-from app.services.auth import get_current_user
+from app.services.auth import (
+    get_current_user,
+    is_admin_user
+)
 
 
 # from backend.session import create_session
@@ -45,11 +48,24 @@ async def get_subscription(
 
     return SubscriptionService(session).get_subscription(subscription_id)
 
+
+@router.get("/all", response_model=SubscriptionSchema)
+async def get_all_subscriptions(
+    subscription_id: int,
+    session: Session = Depends(create_session),
+    admin= Depends(is_admin_user)
+) -> SubscriptionSchema:
+    """Get subscription by ID."""
+
+    return SubscriptionService(session).get_subscription(subscription_id)
+
 @router.post("/add", response_model = SubscriptionSchema)
 async def add_subscription(
     subscription: CreateSubscriptionSchema,
+    user: UserSchema = Depends(get_current_user),
     session: Session = Depends(create_session),
 ) -> SubscriptionSchema:
-    """Get movies by ``year`` and ``rating``."""
+    """Add subscription. If an admin user wishes to specify user_id, it will create a subscription for that user. 
+    Otherwise it will create subscription for currently logged in user."""
 
-    return SubscriptionService(session).add_subscription(subscription)
+    return SubscriptionService(session).add_subscription(subscription, user)

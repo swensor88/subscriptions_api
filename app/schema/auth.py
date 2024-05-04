@@ -1,4 +1,8 @@
-from app.schema.base import BaseSchema
+from app.schema.base import (
+    BaseSchema, 
+    BaseRecordSchema
+)
+from typing import Optional
 
 
 class CreateUserSchema(BaseSchema):
@@ -7,10 +11,10 @@ class CreateUserSchema(BaseSchema):
     admin: bool = False
 
 
-class UserSchema(BaseSchema):
+class UserSchema(BaseRecordSchema):
     email: str
-    admin: bool
-    hashed_password: str | None = None
+    admin: bool | None = None
+    hashed_password: Optional[str] | None = None
 
 
 class TokenSchema(BaseSchema):

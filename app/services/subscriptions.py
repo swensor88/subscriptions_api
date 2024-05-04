@@ -6,7 +6,7 @@ from fastapi import (
 from sqlalchemy import select
 
 from app.models.subscription import SubscriptionModel
-from app.schema.subscription import SubscriptionSchema
+from app.schema.subscription import SubscriptionSchema, UserSchema
 from app.services.base import (
     BaseDataManager,
     BaseService,
@@ -21,15 +21,16 @@ class SubscriptionService(BaseService):
         return SubscriptionDataManager(self.session).get_subscription(subscription_id)
 
     def get_subscriptions(self) -> List[SubscriptionSchema]:
-        """Select subscriptions with filter by ``year`` and ``rating``."""
+        """Select all subscriptions. Admin only."""
 
         return SubscriptionDataManager(self.session).get_subscriptions()
     
-    def add_subscription(self, subscription: SubscriptionSchema):
+    def add_subscription(self, subscription: SubscriptionSchema, user: UserSchema):
         s = SubscriptionModel(
-            industry= subscription.industry,
-            subcategory= subscription.subcategory,
-            source= subscription.source
+            industry=subscription.industry,
+            subcategory=subscription.subcategory,
+            source=subscription.source,
+            user_id=user.id
         )
 
         return SubscriptionDataManager(self.session).add_subscription(s)
@@ -65,5 +66,6 @@ class SubscriptionDataManager(BaseDataManager):
             id=subscription.id,
             industry=subscription.industry,
             subcategory=subscription.subcategory,
-            source=subscription.source
+            source=subscription.source,
+            user_id=subscription.user_id
         )

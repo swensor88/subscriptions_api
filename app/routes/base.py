@@ -25,6 +25,8 @@ class ErrorLoggingRoute(APIRoute):
         async def custom_route_handler(request: Request) -> Response:
             try:
                 return await original_route_handler(request)
+            except HTTPException as h:
+                return Response(content=h.detail, status_code=h.status_code)                
             except RequestValidationError as exc:
                 body = await request.body()
                 detail = {"errors": exc.errors(), "body": body.decode()}
@@ -36,7 +38,7 @@ class ErrorLoggingRoute(APIRoute):
                             generic_exc, value=generic_exc, tb=generic_exc.__traceback__
                         )
                     )
-                    , status_code=504)
+                    , status_code=500)
                 else:
                     return Response("Internal server error", status_code=500)                
 

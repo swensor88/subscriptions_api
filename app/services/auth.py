@@ -2,6 +2,7 @@ from datetime import (
     datetime,
     timedelta,
 )
+from typing import Callable
 
 from fastapi import (
     Depends,
@@ -67,22 +68,34 @@ async def get_current_user(token: str = Depends(oauth2_schema)) -> UserSchema | 
         payload = jwt.decode(token, config.token_key, algorithms=[TOKEN_ALGORITHM])
 
         # extract encoded information
-        name: str = payload.get("name")
-        sub: str = payload.get("sub")
+        id: str = payload.get("id")
+        email: str = payload.get("email")
         expires_at: str = payload.get("expires_at")
 
-        if sub is None:
+        if id is None:
             raise_with_log(status.HTTP_401_UNAUTHORIZED, "Invalid credentials")
 
         if is_expired(expires_at):
             raise_with_log(status.HTTP_401_UNAUTHORIZED, "Token expired")
 
-        return UserSchema(name=name, email=sub)
+        return UserSchema(id=id, email=email)
     except JWTError:
         raise_with_log(status.HTTP_401_UNAUTHORIZED, "Invalid credentials")
 
     return None
 
+async def is_admin_user(user: UserSchema = Depends(get_current_user)) -> bool | None:
+    """
+    Check for admin user. Raises exception with 401 if not admin
+    \nReturns: 
+    \n-True if admin is logged in
+    \n-False is regular user is logged in
+    \n-None if not logged in
+    """
+    if(user == None or user.admin == None or not user.admin):
+        raise_with_log(status.HTTP_401_UNAUTHORIZED, "Must be admin user")
+    else:
+        return True
 
 def is_expired(expires_at: str) -> bool:
     """Return :obj:`True` if token has expired."""
@@ -138,16 +151,16 @@ class AuthService(HashingMixin, BaseService):
             if not self.verify(user.hashed_password, login.password):
                 raise_with_log(status.HTTP_401_UNAUTHORIZED, "Incorrect password")
             else:
-                access_token = self._create_access_token(user.name, user.email)
+                access_token = self._create_access_token(user.id, user.email)
                 return TokenSchema(access_token=access_token, token_type=TOKEN_TYPE)
         return None
 
-    def _create_access_token(self, name: str, email: str) -> str:
+    def _create_access_token(self, id: int, email: str) -> str:
         """Encode user information and expiration time."""
 
         payload = {
-            "name": name,
-            "sub": email,
+            "id": id,
+            "email": email,
             "expires_at": self._expiration_time(),
         }
 
@@ -168,8 +181,8 @@ class AuthDataManager(BaseDataManager):
         self.add_one(user)
         self.session.commit()
         return UserSchema(
-            id = user.id,
-            name = user.name,
+            id=user.id,
+            admin=user.admin,
             email=user.email
         )
 
@@ -181,9 +194,10 @@ class AuthDataManager(BaseDataManager):
         if not isinstance(model, UserModel):
             raise_with_log(status.HTTP_404_NOT_FOUND, "User not found")
 
-        return UserSchema(
+        r = UserSchema(
             id=model.id,
-            name=model.name,
+            admin=model.admin,
             email=model.email,
             hashed_password=model.hashed_password,
         )
+        return r

@@ -4,10 +4,18 @@ from typing import (
     List,
 )
 
+import datetime
+
 from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
     mapped_column
+)
+from sqlalchemy.sql import func
+from sqlalchemy import (
+    Integer, 
+    String, 
+    DateTime
 )
 
 
@@ -18,7 +26,8 @@ class SQLModel(DeclarativeBase):
     to the corresponding schema.
     """
     id: Mapped[int] = mapped_column("id", primary_key = True)
-
+    # created_at: Mapped[datetime.datetime] = mapped_column("created_at", DateTime(timezone=True), server_default=func.now())
+    # updated_at: Mapped[datetime.datetime] = mapped_column("created_at", DateTime(timezone=True), server_default=func.now(), onupdate=func.current_timestamp())
 
     @classmethod
     def schema(cls) -> str:

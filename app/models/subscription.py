@@ -42,3 +42,4 @@ class SubscriptionModel(SQLModel):
     industry: Mapped[IndustryEnum] = mapped_column("industry")
     source: Mapped[SourceEnum] = mapped_column("source")
     subcategory: Mapped[SubcategoryEnum] = mapped_column("subcategory")
+    user_id: Mapped[int] = mapped_column("user_id")
