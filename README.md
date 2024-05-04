@@ -47,3 +47,7 @@ docker-compose up -d
 ```
 
 Note: If the API has any issues connecting the database, try to start it again manually.
+
+### Test API with Swagger
+
+Navigate to http://127.0.0.1:8000 to view the API. It should redirect you to swagger path at /docs
