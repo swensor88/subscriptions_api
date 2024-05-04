@@ -2,14 +2,14 @@ from app.schema.base import BaseSchema
 
 
 class CreateUserSchema(BaseSchema):
-    name: str
     email: str
     password: str
+    admin: bool = False
 
 
 class UserSchema(BaseSchema):
-    name: str
     email: str
+    admin: bool
     hashed_password: str | None = None
 
 

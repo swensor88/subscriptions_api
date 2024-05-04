@@ -32,11 +32,12 @@ class Config(BaseSettings):
 
     database: DatabaseConfig = DatabaseConfig()
     token_key: str = ""
+    show_debug_info: bool = False
 
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
-        env_prefix="MYAPI_",
+        env_prefix="SUBSCRIPTION_API_",
         env_nested_delimiter="__",
         case_sensitive=False,
     )

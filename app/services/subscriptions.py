@@ -1,5 +1,8 @@
 from typing import List
-
+from fastapi import (
+    Depends,
+    status,
+)
 from sqlalchemy import select
 
 from app.models.subscription import SubscriptionModel
@@ -9,6 +12,7 @@ from app.services.base import (
     BaseService,
 )
 
+from app.exc import raise_with_log
 
 class SubscriptionService(BaseService):
     def get_subscription(self, subscription_id: int) -> SubscriptionSchema:
@@ -16,10 +20,10 @@ class SubscriptionService(BaseService):
 
         return SubscriptionDataManager(self.session).get_subscription(subscription_id)
 
-    def get_subscriptions(self, year: int, rating: float) -> List[SubscriptionSchema]:
+    def get_subscriptions(self) -> List[SubscriptionSchema]:
         """Select subscriptions with filter by ``year`` and ``rating``."""
 
-        return SubscriptionDataManager(self.session).get_subscriptions(year, rating)
+        return SubscriptionDataManager(self.session).get_subscriptions()
     
     def add_subscription(self, subscription: SubscriptionSchema):
         s = SubscriptionModel(
@@ -33,8 +37,11 @@ class SubscriptionService(BaseService):
 
 class SubscriptionDataManager(BaseDataManager):
     def get_subscription(self, subscription_id: int) -> SubscriptionSchema:
-        stmt = select(SubscriptionModel).where(SubscriptionModel.subscription_id == subscription_id)
+        stmt = select(SubscriptionModel).where(SubscriptionModel.id == subscription_id)
         model = self.get_one(stmt)
+
+        if not isinstance(model, SubscriptionModel):
+            raise_with_log(status.HTTP_404_NOT_FOUND, "Subscription not found")
 
         return SubscriptionSchema(**model.to_dict())
 

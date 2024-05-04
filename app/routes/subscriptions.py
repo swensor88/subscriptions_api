@@ -29,8 +29,10 @@ from app.const import (
     SUBSCRIPTION_URL_NEW,
 )
 
+from .base import BaseRouter
 
-router = APIRouter(prefix="/" + SUBSCRIPTION_URL, tags=SUBSCRIPTION_TAGS)
+
+router = BaseRouter(prefix="/" + SUBSCRIPTION_URL, tags=SUBSCRIPTION_TAGS)
 
 
 @router.get("/", response_model=SubscriptionSchema)
@@ -41,7 +43,7 @@ async def get_subscription(
 ) -> SubscriptionSchema:
     """Get subscription by ID."""
 
-    return SubscriptionService(session).get_subscription(year, rating)
+    return SubscriptionService(session).get_subscription(subscription_id)
 
 @router.post("/add", response_model = SubscriptionSchema)
 async def add_subscription(

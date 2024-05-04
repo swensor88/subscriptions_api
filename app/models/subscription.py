@@ -37,7 +37,7 @@ class SubcategoryEnum(enum.Enum):
 
 class SubscriptionModel(SQLModel):
     __tablename__ = "subscriptions"
-    __table_args__ = {"schema": "myapi"}
+    __table_args__ = {"schema": "public"}
 
     industry: Mapped[IndustryEnum] = mapped_column("industry")
     source: Mapped[SourceEnum] = mapped_column("source")

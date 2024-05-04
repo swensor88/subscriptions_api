@@ -9,6 +9,7 @@ from app.backend.session import create_session
 from app.const import (
     AUTH_TAGS,
     AUTH_URL,
+    AUTH_TOKEN_PATH
 )
 from app.schema.auth import TokenSchema
 from app.schema.auth import (
@@ -16,12 +17,13 @@ from app.schema.auth import (
     UserSchema
 )
 from app.services.auth import AuthService
+from .base import BaseRouter
 
 
-router = APIRouter(prefix="/" + AUTH_URL, tags=AUTH_TAGS)
+router = BaseRouter(prefix="/" + AUTH_URL, tags=AUTH_TAGS)
 
 
-@router.post("/token", response_model=TokenSchema)
+@router.post("/" + AUTH_TOKEN_PATH, response_model=TokenSchema)
 async def authenticate(
     login: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(create_session),

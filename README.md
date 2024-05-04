@@ -11,7 +11,7 @@ This is my submission for the inteview screening process for NWO.ai. It is a sim
 - Docker/Docker Desktop
 - python3
 - Git
-- GitHub Account (for cloning this repository)
+- Optional: GitHub Account
 - Please have Network subnet 175.40.0.0/16 available on your local Docker environment. Alternatively, you can change these values in docker-compose.yml
 
 ### Step 1: Clone repository
@@ -25,22 +25,18 @@ git clone https://github.com/swensor88/nwo_subscriptions_demo.git
 
 Easiest method is to copy example file, using this command:
 ```bash
-cp nwo_subscriptions/subscriptions/subscription_api/.env.example nwo_subscriptions/subscriptions/subscription_api/.env
+cp .env.example .env
 ```
 
 ### Step 3: Build With Docker Compose
-
-Enter the project's root folder: 
-
-```bash
-cd nwo_subscriptions
-```
 
 Run this command to build images for the db and the api
 
 ```bash
 docker-compose build
 ```
+
+Note: It may be necessary to modify the volume path in docker-compose.yml, found on/near line 19. This can be removed entirely (sacrificing the ability to import/retrieve db dumps on the container) or replaced with a path that is writable when running docker-compose up -d
 
 
 ### Step 4: Update/Start Container

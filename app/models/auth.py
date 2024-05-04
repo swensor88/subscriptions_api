@@ -8,8 +8,8 @@ from app.models.base import SQLModel
 
 class UserModel(SQLModel):
     __tablename__ = "users"
-    __table_args__ = {"schema": "myapi"}
+    __table_args__ = {"schema": "public"}
 
     email: Mapped[str] = mapped_column("email")
-    name: Mapped[str] = mapped_column("name")
+    admin: Mapped[bool] = mapped_column("admin")
     hashed_password: Mapped[str] = mapped_column("hashed_password")

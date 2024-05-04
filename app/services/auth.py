@@ -21,6 +21,7 @@ from sqlalchemy import select
 from app.backend.config import config
 from app.const import (
     AUTH_URL,
+    AUTH_TOKEN_PATH,
     TOKEN_ALGORITHM,
     TOKEN_EXPIRE_MINUTES,
     TOKEN_TYPE,
@@ -40,7 +41,7 @@ from app.services.base import (
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
-oauth2_schema = OAuth2PasswordBearer(tokenUrl=AUTH_URL, auto_error=False)
+oauth2_schema = OAuth2PasswordBearer(tokenUrl=AUTH_URL + "/" + AUTH_TOKEN_PATH, auto_error=False)
 
 
 async def get_current_user(token: str = Depends(oauth2_schema)) -> UserSchema | None:
@@ -112,8 +113,8 @@ class AuthService(HashingMixin, BaseService):
         """Add user with hashed password to database."""
 
         user_model = UserModel(
-            name=user.name,
             email=user.email,
+            admin=user.admin,
             hashed_password=self.bcrypt(user.password),
         )
 

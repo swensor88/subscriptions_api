@@ -12,6 +12,7 @@ OPEN_API_DESCRIPTION: Final = "Demo Subscriptions API for NWO.ai built with Fast
 # Authentication service constants
 AUTH_TAGS: Final[List[str | Enum] | None] = ["Authentication"]
 AUTH_URL: Final = "auth"
+AUTH_TOKEN_PATH: Final = "token"
 
 TOKEN_TYPE: Final = "bearer"
 TOKEN_EXPIRE_MINUTES: Final = 60

@@ -1,30 +1,22 @@
-CREATE USER subscription_user WITH PASSWORD 'S3cret';
-CREATE DATABASE subscription_api;
-ALTER DATABASE subscription_api OWNER TO subscription_user;
-
-
-CREATE TABLE myapi.subscriptions
+CREATE TABLE IF NOT EXISTS users
 (
     id SERIAL PRIMARY KEY,
+    email character varying(255),
+    admin bit,
+    hashed_password character varying(255)
+);
+
+ALTER TABLE IF EXISTS users
+    OWNER to subscription_user;
+
+CREATE TABLE IF NOT EXISTS subscriptions
+(
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users (id),
     industry character varying(255),
     source character varying(255),
     subcategory character varying(255)
 );
 
-ALTER TABLE IF EXISTS myapi.subscriptions
+ALTER TABLE IF EXISTS subscriptions
     OWNER to subscription_user;
-
-
-CREATE TABLE myapi.subscriptions
-(
-    id SERIAL PRIMARY KEY,
-    industry character varying(255),
-    source character varying(255),
-    subcategory character varying(255)
-);
-
-ALTER TABLE IF EXISTS myapi.subscriptions
-    OWNER to subscription_user;
-
-
-/*TODO: Add foreign key */

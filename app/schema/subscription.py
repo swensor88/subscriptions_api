@@ -1,4 +1,5 @@
 from app.schema.base import BaseSchema
+from app.schema.auth import UserSchema
 
 from app.models.subscription import(
     IndustryEnum,
@@ -15,6 +16,7 @@ class CreateSubscriptionSchema(BaseSchema):
 
 class SubscriptionSchema(BaseSchema):
     id: int
+    user: UserSchema
     industry: IndustryEnum
     subcategory: SubcategoryEnum
     source: SourceEnum
