@@ -2,13 +2,13 @@
 
 ##Overview
 
-This is my submission for the inteview screening process for NWO.ai. It is a simple REST API built on Django. It is fully containerized and should be easy to install.
+This is my submission for the inteview screening process for NWO.ai. It is a simple REST API built with Fast API. It is fully containerized and should be easy to install.
 
 ##Installation
 
 ### Pre-Requisites
 
-- Docker/Docker Desktop
+- [Docker/Docker Desktop](https://www.docker.com/products/docker-desktop/)
 - python3
 - Git
 - Optional: GitHub Account
