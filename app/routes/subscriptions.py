@@ -1,16 +1,18 @@
-from typing import List
+from typing import List, Optional
 
 from fastapi import (
     APIRouter,
     Depends,
+    Response
 )
+from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
 from app.models.subscription import SubscriptionModel
 from app.schema.auth import UserSchema
 from app.schema.subscription import(
     SubscriptionSchema,
-    CreateSubscriptionSchema
+    SubscriptionSchema
 ) 
 from app.services.subscriptions import SubscriptionService
 from app.services.base import (
@@ -21,8 +23,10 @@ from app.services.base import (
 from app.backend.session import create_session
 from app.services.auth import (
     get_current_user,
-    is_admin_user
+    is_admin_user,
+    authorize_update
 )
+from app.exc import raise_with_log
 
 
 # from backend.session import create_session
@@ -38,34 +42,59 @@ from .base import BaseRouter
 router = BaseRouter(prefix="/" + SUBSCRIPTION_URL, tags=SUBSCRIPTION_TAGS)
 
 
-@router.get("/", response_model=SubscriptionSchema)
+@router.get("/get", response_model=SubscriptionSchema)
 async def get_subscription(
-    subscription_id: int,
+    subscription_id: Optional[int] = None,
     user: UserSchema = Depends(get_current_user),
     session: Session = Depends(create_session),
 ) -> SubscriptionSchema:
-    """Get subscription by ID."""
+    """Get subscription by ID if specified. 
+    Otherwise, return current user's subscription."""
 
-    return SubscriptionService(session).get_subscription(subscription_id)
+    if(subscription_id != None):
+        s = SubscriptionService(session).get_subscription(subscription_id)
+    else:
+        s = SubscriptionService(session).get_user_subscription(user.id)
+    return JSONResponse(s.model_dump())
 
 
-@router.get("/all", response_model=SubscriptionSchema)
+@router.get("/all", response_model=List[SubscriptionSchema])
 async def get_all_subscriptions(
-    subscription_id: int,
     session: Session = Depends(create_session),
-    admin= Depends(is_admin_user)
-) -> SubscriptionSchema:
-    """Get subscription by ID."""
+    admin = Depends(is_admin_user)
+) -> List[SubscriptionSchema]:
+    """Get all subscriptions in the database. Admin priveleges required."""
 
-    return SubscriptionService(session).get_subscription(subscription_id)
+    s = SubscriptionService(session).get_subscriptions()
+    d = dict(map(lambda i: (s[i].id, s[i].model_dump()), range(len(s))))
+    # return Response(d, 200, {"content-type": "text/json"})
+    return JSONResponse(d, status_code=200)
 
 @router.post("/add", response_model = SubscriptionSchema)
 async def add_subscription(
-    subscription: CreateSubscriptionSchema,
+    subscription: SubscriptionSchema,
     user: UserSchema = Depends(get_current_user),
     session: Session = Depends(create_session),
 ) -> SubscriptionSchema:
-    """Add subscription. If an admin user wishes to specify user_id, it will create a subscription for that user. 
-    Otherwise it will create subscription for currently logged in user."""
+    f"""Add subscription. If an admin user wishes to specify user_id, it will create a subscription for that user. 
+    Otherwise it will create subscription for currently logged in user.
+    Industries: 
+    """
 
-    return SubscriptionService(session).add_subscription(subscription, user)
+    s = SubscriptionService(session).add_subscription(subscription, user)
+    return JSONResponse(s.model_dump(), status_code=201 if isinstance(s.id, int) else 204)
+
+@router.put("/update")
+async def update_subscription(
+    subscription: SubscriptionSchema,
+    user: UserSchema = Depends(get_current_user),
+    session: Session = Depends(create_session)
+):
+    await authorize_update(subscription, user)
+
+    s = SubscriptionService(session).update_subscription(subscription, user)
+    if(isinstance(s, SubscriptionSchema)):
+        return JSONResponse(s.model_dump(), status_code=202)
+    else:
+        return Response(status_code=400)
+

@@ -33,13 +33,15 @@ class ErrorLoggingRoute(APIRoute):
                 raise HTTPException(status_code=422, detail=detail)
             except Exception as generic_exc:
                 if(config.show_debug_info):
-                    return Response(content="blablabla".join(
-                        traceback.format_exception(
-                            generic_exc, value=generic_exc, tb=generic_exc.__traceback__
-                        )
-                    )
-                    , status_code=500)
+                    tb = traceback.format_exception(generic_exc, value=generic_exc, tb=generic_exc.__traceback__)
+                    print(tb)
+                    return Response(content=",".join(tb), status_code=500)
                 else:
                     return Response("Internal server error", status_code=500)                
 
         return custom_route_handler
+
+class ResponseHandler(Response):
+    def __init__(self, *args, **kwargs):
+        super(ResponseHandler, self).__init__(*args, **kwargs)
+        self.body

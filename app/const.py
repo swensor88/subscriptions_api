@@ -18,7 +18,7 @@ TOKEN_TYPE: Final = "bearer"
 TOKEN_EXPIRE_MINUTES: Final = 60
 
 # Algorithm used to sign the JWT tokens
-TOKEN_ALGORITHM: Final = "HS256"
+TOKEN_ALGORITHM: Final = "HS512"
 
 # Subscription service constants
 SUBSCRIPTION_TAGS: Final[List[str | Enum] | None] = ["Subscriptions"]

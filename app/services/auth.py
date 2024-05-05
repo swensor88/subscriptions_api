@@ -29,6 +29,7 @@ from app.const import (
 )
 from app.exc import raise_with_log
 from app.models.auth import UserModel
+from app.schema.subscription import SubscriptionSchema
 from app.schema.auth import (
     CreateUserSchema,
     TokenSchema,
@@ -71,6 +72,7 @@ async def get_current_user(token: str = Depends(oauth2_schema)) -> UserSchema | 
         id: str = payload.get("id")
         email: str = payload.get("email")
         expires_at: str = payload.get("expires_at")
+        admin: bool = payload.get("admin")
 
         if id is None:
             raise_with_log(status.HTTP_401_UNAUTHORIZED, "Invalid credentials")
@@ -78,7 +80,7 @@ async def get_current_user(token: str = Depends(oauth2_schema)) -> UserSchema | 
         if is_expired(expires_at):
             raise_with_log(status.HTTP_401_UNAUTHORIZED, "Token expired")
 
-        return UserSchema(id=id, email=email)
+        return UserSchema(id=id, email=email, admin=admin)
     except JWTError:
         raise_with_log(status.HTTP_401_UNAUTHORIZED, "Invalid credentials")
 
@@ -96,6 +98,10 @@ async def is_admin_user(user: UserSchema = Depends(get_current_user)) -> bool | 
         raise_with_log(status.HTTP_401_UNAUTHORIZED, "Must be admin user")
     else:
         return True
+
+async def authorize_update(subscription: SubscriptionSchema, user: UserSchema = Depends(get_current_user)):
+    if(user.id != subscription.user_id and not is_admin_user):
+        raise_with_log(status.HTTP_403_FORBIDDEN, "User can't update this subscription")
 
 def is_expired(expires_at: str) -> bool:
     """Return :obj:`True` if token has expired."""
@@ -151,17 +157,18 @@ class AuthService(HashingMixin, BaseService):
             if not self.verify(user.hashed_password, login.password):
                 raise_with_log(status.HTTP_401_UNAUTHORIZED, "Incorrect password")
             else:
-                access_token = self._create_access_token(user.id, user.email)
+                access_token = self._create_access_token(user)
                 return TokenSchema(access_token=access_token, token_type=TOKEN_TYPE)
         return None
 
-    def _create_access_token(self, id: int, email: str) -> str:
+    def _create_access_token(self, user: UserSchema) -> str:
         """Encode user information and expiration time."""
 
         payload = {
-            "id": id,
-            "email": email,
+            "id": user.id,
+            "email": user.email,
             "expires_at": self._expiration_time(),
+            "admin": user.admin
         }
 
         return jwt.encode(payload, config.token_key, algorithm=TOKEN_ALGORITHM)
