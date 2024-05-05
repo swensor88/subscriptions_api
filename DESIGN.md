@@ -81,7 +81,7 @@ FastAPI is a very popular framework, and was ultimately chosen for this project.
 
 Some disadvantages I would call out:
 
-- Not tightly bundled with any SQL provider. The .Net Web API is a great example of an API framework that is tightly coupled with virtually all features you could desire, such as DB/Code-first database migrations, extensive authentication features, data validation built in, fully functional controller objects/decorators, etc. Django does better here, with is built-in Django ORM.
+- Not tightly bundled with any SQL provider. The .Net Web API is a great example of an API framework that is tightly coupled with virtually all features you could desire, such as DB/Code-first database migrations, extensive authentication features, data validation built in, fully functional controller objects/decorators, etc. Django does better here, with it's built-in Django ORM.
 - Scaffolding features aren't amazing. While it is very light on coding, so this doesn't end up being arduous, it would be nice to add controllers, models, etc. via CLI. This helps developers maintain best practices and keeps your project clean
 
 
