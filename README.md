@@ -23,7 +23,7 @@ git clone https://github.com/swensor88/nwo_subscriptions_demo.git
 
 ### Step 2: Setup environment (optional)
 
-Note: If you only wish to run API in container, skip to Step 3.
+Open up the cloned repo in IDE/terminal of your choosing. Make sure you're in the root folder which contains 'docker-compose.yml' and 'requirements.txt' files.
 
 
 First, copy example file, using this command:
@@ -41,10 +41,17 @@ Third, create/activate venv named env
 python -m venv env && source env/bin/activate
 ```
 
-Finally, install using requirements file
+Fourth, install using requirements file
 ```bash
 pip install -r requirements.txt
 ```
+
+Finally, test local server with uvicorn
+```bash
+uvicorn app.main:app --reload
+```
+
+
 
 ### Step 3: Build With Docker Compose
 
