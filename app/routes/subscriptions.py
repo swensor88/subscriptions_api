@@ -48,8 +48,7 @@ async def get_subscription(
     user: UserSchema = Depends(get_current_user),
     session: Session = Depends(create_session),
 ) -> SubscriptionSchema:
-    """Get subscription by ID if specified. 
-    Otherwise, return current user's subscription."""
+    """Get current user's subscription. For admins, option to search subscription by ID if specified. """
 
     if(subscription_id != None):
         s = SubscriptionService(session).get_subscription(subscription_id)
@@ -76,9 +75,8 @@ async def add_subscription(
     user: UserSchema = Depends(get_current_user),
     session: Session = Depends(create_session),
 ) -> SubscriptionSchema:
-    f"""Add subscription. If an admin user wishes to specify user_id, it will create a subscription for that user. 
+    """Add subscription. If an admin user wishes to specify user_id, it will create a subscription for that user. 
     Otherwise it will create subscription for currently logged in user.
-    Industries: 
     """
 
     s = SubscriptionService(session).add_subscription(subscription, user)
@@ -90,11 +88,12 @@ async def update_subscription(
     user: UserSchema = Depends(get_current_user),
     session: Session = Depends(create_session)
 ):
+    """Update a subscription. Must be owner of subscription, or have admin priveleges."""
     await authorize_update(subscription, user)
 
     s = SubscriptionService(session).update_subscription(subscription, user)
     if(isinstance(s, SubscriptionSchema)):
-        return JSONResponse(s.model_dump(), status_code=202)
+        return JSONResponse(s.model_dump(), status_code=200)
     else:
         return Response(status_code=400)
 

@@ -45,5 +45,6 @@ async def register(
     new_user: CreateUserSchema,
     session: Session = Depends(create_session)
 ) -> UserSchema | None:
+    """Register new user"""
     f = AuthService(session).create_user(new_user)
     return f

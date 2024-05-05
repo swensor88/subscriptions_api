@@ -3,12 +3,6 @@ from app.routes import (
     subscriptions,
     auth
 )
-from traceback import print_exception
-from app.exc import (
-    catch_exceptions_middleware
-)
-import traceback
-
 
 from app.const import (
     OPEN_API_DESCRIPTION,
@@ -25,7 +19,6 @@ app = FastAPI(
     version=__version__,
     swagger_ui_parameters={"defaultModelsExpandDepth": -1}
 )
-# app.middleware('http')(catch_exceptions_middleware)
 
 
 @app.get("/", response_class=RedirectResponse)

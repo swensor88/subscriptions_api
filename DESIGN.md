@@ -83,3 +83,13 @@ Some disadvantages I would call out:
 
 - Not tightly bundled with any SQL provider. The .Net Web API is a great example of an API framework that is tightly coupled with virtually all features you could desire, such as DB/Code-first database migrations, extensive authentication features, data validation built in, fully functional controller objects/decorators, etc. Django does better here, with is built-in Django ORM.
 - Scaffolding features aren't amazing. While it is very light on coding, so this doesn't end up being arduous, it would be nice to add controllers, models, etc. via CLI. This helps developers maintain best practices and keeps your project clean
+
+
+### Next Steps
+
+Features I consider important to add for an API:
+
+- DB Migrations using Alembic library
+- Improved OpenAPI Documentation, to make swagger more intuitive. Especially explaining/calling out data validation constraints.
+- Logging. Would add concept of log-levels, development mode, etc. Logging is very light currently
+- Environments. Would create dev, staging and production environments

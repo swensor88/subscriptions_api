@@ -28,23 +28,3 @@ def runner_info() -> str:
     info = inspect.getframeinfo(inspect.stack()[2][0])
     return f"{info.filename}:{info.function}:{info.lineno}"
 
-
-async def catch_exceptions_middleware(request: Request, call_next) -> Response:
-    try:
-        return await call_next(request)
-    except Exception as e:
-        # you probably want some kind of logging here
-        s = traceback.format_exc()
-        print(s)
-        # print_exception(e)
-        if(config.show_debug_info):
-            return Response("blablabla"
-            #                 .join(
-            #     traceback.format_exception(
-            #         e, value=e, tb=e.__traceback__
-            #     )
-            # )
-            , status_code=500)
-        else:
-            return Response("Internal server error", status_code=500)
-
