@@ -33,7 +33,7 @@ class SubscriptionService(BaseService):
     
     def add_subscription(self, subscription: SubscriptionSchema, user: UserSchema):
 
-        if(self.user_has_subscription(user.id)):
+        if(self.user_has_subscription(user.id) or self.user_has_subscription(subscription.user_id)):
             raise raise_with_log(status.HTTP_400_BAD_REQUEST, "Subscription already exists for user. Update existing subscription")
 
         s = SubscriptionModel(
