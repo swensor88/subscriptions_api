@@ -18,7 +18,7 @@ This is my submission for the inteview screening process for NWO.ai. It is a sim
 
 Run this command to clone the repo on your local machine
 ```bash
-git clone https://github.com/swensor88/nwo_subscriptions_demo.git
+git clone https://github.com/swensor88/subscriptions_api.git
 ```
 
 ### Step 2: Setup environment (optional)
