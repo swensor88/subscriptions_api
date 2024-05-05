@@ -30,7 +30,7 @@ The data layer uses SQL Alchemy + SQL Alchemy ORM in a Session Factory pattern. 
 
 ### Service/Business Layer
 
-The service layer comprises all services found in /app/services. These serve as a broker between the controllers and the data layer, and will contain any business logic, such as the 1 subscription per user is rule. Alternatively, this could be enforced on the SQL layer via a UNIQUE constraint. Doing it in the Python layer makes it more accessible to developers, but also introduces the possibility of bugs. Doing it on the SQL layer promises to be more robust, but more obfuscated from developers and admins.
+The service layer comprises all services found in /app/services. These serve as a broker between the controllers and the data layer, and will contain any business logic, such as the 1 subscription per user rule. Alternatively, this could be enforced on the SQL layer via a UNIQUE constraint. Doing it in the Python layer makes it more accessible to developers, but also introduces the possibility of bugs. Doing it on the SQL layer promises to be more robust, but more obfuscated from developers and admins.
 
 ### Controller Layer
 
