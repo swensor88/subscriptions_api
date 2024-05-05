@@ -29,6 +29,7 @@ services:
     environment:
       SUBSCRIPTION_API_DATABASE__DSN: postgresql://subscription_user:S3cret@175.40.128.2:5432/subscription_api
       SUBSCRIPTION_API_SHOW_DEBUG_INFO: 0
+      SUBSCRIPTION_API_TOKEN_KEY: secret-token
     ports:
       - "8000:8000"
     depends_on:

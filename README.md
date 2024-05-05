@@ -21,11 +21,29 @@ Run this command to clone the repo on your local machine
 git clone https://github.com/swensor88/nwo_subscriptions_demo.git
 ```
 
-### Step 2: Make your .env File
+### Step 2: Setup environment (optional)
 
-Easiest method is to copy example file, using this command:
+Note: If you only wish to run API in container, skip to Step 3.
+
+
+First, copy example file, using this command:
 ```bash
 cp .env.example .env
+```
+
+Second, install venv 
+```bash
+pip install venv
+```
+
+Third, create/activate venv named env
+```bash
+python -m venv env && source env/bin/activate
+```
+
+Finally, install using requirements file
+```bash
+pip install -r requirements.txt
 ```
 
 ### Step 3: Build With Docker Compose
