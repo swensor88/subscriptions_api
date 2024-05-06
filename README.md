@@ -61,8 +61,6 @@ Run this command to build images for the db and the api
 docker-compose build
 ```
 
-Note: It may be necessary to modify the volume path in docker-compose.yml, found on/near line 19. This can be removed entirely (sacrificing the ability to import/retrieve db dumps on the container) or replaced with a path that is writable when running docker-compose up -d
-
 
 ### Step 4: Update/Start Container
 
